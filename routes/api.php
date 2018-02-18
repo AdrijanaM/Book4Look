@@ -12,6 +12,17 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+
+Route::post('/user',[
+    'uses' => 'UserController@signup'
+]);
+
+//quotes
 Route::post('/quote',[
     'uses' => 'QuoteController@postQuote'
 ]);
@@ -19,7 +30,6 @@ Route::post('/quote',[
 Route::get('/quotes',[
     'uses' => 'QuoteController@getQuotes'
 ]);
-
 
 Route::put('/quote/{id}',[
     'uses' => 'QuoteController@putQuote'
@@ -29,6 +39,41 @@ Route::delete('/quote/{id}',[
     'uses' => 'QuoteController@deleteQuote'
 ]);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//authors
+Route::post('/author',[
+    'uses' => 'AuthorController@postAuthor'
+]);
+
+Route::get('/authors',[
+    'uses' => 'AuthorController@getAuthors'
+]);
+
+//books
+Route::post('/book',[
+    'uses' => 'BookController@postBook'
+]);
+
+Route::get('/books',[
+    'uses' => 'BookController@getBooks'
+]);
+
+//Route::put('/author/{id}',[
+//    'uses' => 'AuthorController@putAuthor'
+//]);
+
+
+//Route::group(['middleware' => 'auth:api'], function () {
+//    Route::get('/posts', 'PostsController@index');
+//});
+
+//Route::filter(
+//    'auth.basicCustom', function (Request $request) {
+//    $credentials = [ 'email' => $request->getUser(), 'password' => $request->getPassword() ];
+//
+//    if (!Auth::check()) {
+//        if (!Auth::once($credentials)) {
+//            throw new \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException('x-Basic');
+//        }
+//    }
+//}
+//);
