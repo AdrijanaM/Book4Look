@@ -17,26 +17,42 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-
+//login user
 Route::post('/user',[
     'uses' => 'UserController@signup'
 ]);
 
+Route::post('/user/signin',[
+    'uses' => 'UserController@signin'
+]);
+
+Route::get('/username',[
+    'uses' => 'UserController@getUserName'
+]);
+
 //quotes
+//Route::group(['middleware' => 'auth:api'], function () {
+//    Route::get('/posts', 'PostsController@index');
+//});
+
 Route::post('/quote',[
-    'uses' => 'QuoteController@postQuote'
+    'uses' => 'QuoteController@postQuote',
+    'middleware' => 'auth.jwt'
 ]);
 
 Route::get('/quotes',[
-    'uses' => 'QuoteController@getQuotes'
+    'uses' => 'QuoteController@getQuotes',
+//    'middleware' => 'auth.jwt'
 ]);
 
 Route::put('/quote/{id}',[
-    'uses' => 'QuoteController@putQuote'
+    'uses' => 'QuoteController@putQuote',
+    'middleware' => 'auth.jwt'
 ]);
 
 Route::delete('/quote/{id}',[
-    'uses' => 'QuoteController@deleteQuote'
+    'uses' => 'QuoteController@deleteQuote',
+    'middleware' => 'auth.jwt'
 ]);
 
 //authors
@@ -60,20 +76,3 @@ Route::get('/books',[
 //Route::put('/author/{id}',[
 //    'uses' => 'AuthorController@putAuthor'
 //]);
-
-
-//Route::group(['middleware' => 'auth:api'], function () {
-//    Route::get('/posts', 'PostsController@index');
-//});
-
-//Route::filter(
-//    'auth.basicCustom', function (Request $request) {
-//    $credentials = [ 'email' => $request->getUser(), 'password' => $request->getPassword() ];
-//
-//    if (!Auth::check()) {
-//        if (!Auth::once($credentials)) {
-//            throw new \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException('x-Basic');
-//        }
-//    }
-//}
-//);
