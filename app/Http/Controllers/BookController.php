@@ -70,6 +70,7 @@ class BookController extends Controller
         if (!empty($book)) {
             $book->average_rating = $json->book->average_rating;
             $book->description = $json->book->description;
+            $book->image = $json->book->image_url;
             $book->save();
         } else {
             $newBook = new Book;
@@ -78,6 +79,7 @@ class BookController extends Controller
             $newBook->bookAuthor = $json->authors->author->name;
             $newBook->average_rating = $json->book->average_rating;
             $newBook->description = $json->book->description;
+            $book->image = $json->book->image_url;
             $newBook->save();
         }
 

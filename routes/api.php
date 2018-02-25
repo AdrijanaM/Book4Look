@@ -40,9 +40,9 @@ Route::post('/quote',[
     'middleware' => 'auth.jwt'
 ]);
 
-Route::get('/quotes',[
+Route::get('/quotes/{userId}',[
     'uses' => 'QuoteController@getQuotes',
-//    'middleware' => 'auth.jwt'
+    'middleware' => 'auth.jwt'
 ]);
 
 Route::put('/quote/{id}',[

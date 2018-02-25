@@ -17,8 +17,9 @@ class CreateBookTable extends Migration
             $table->integer('id', 11);
             $table->integer('idbook');
             $table->string('title',50);
+            $table->string('image');
             $table->string('bookAuthor',50);
-            $table->integer('average_rating');
+            $table->decimal('average_rating');
             $table->text('description');
         });
     }

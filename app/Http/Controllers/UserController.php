@@ -33,11 +33,15 @@ class UserController extends Controller
 
     public function signin(Request $request)
     {
+
         //login
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required'
         ]);
+        $emailOfUser = $request->input('email');
+        $user = User::where('email', 'LIKE', $emailOfUser)->first();
+        $this->UserID = User::where('id', 'LIKE', $user->id)->first();
         $credentials = $request->only('email', 'password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
@@ -56,9 +60,9 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUserName()
+    public function getUserId()
     {
-//        $user = JWTAuth::parseToken()->toUser();
+        return $this->UserID;
     }
 
 }

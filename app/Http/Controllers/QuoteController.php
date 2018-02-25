@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Quote;
+use  App\User;
 
 class QuoteController extends Controller
 {
@@ -26,9 +27,9 @@ class QuoteController extends Controller
 
     }
 
-    public function getQuotes()
+    public function getQuotes($userId)
     {
-        $quotes = Quote::all();
+        $quotes = Quote::where('userId', $userId)->get();
         $response = [
             'quotes' => $quotes
         ];
