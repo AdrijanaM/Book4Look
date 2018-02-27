@@ -33,7 +33,6 @@ class UserController extends Controller
 
     public function signin(Request $request)
     {
-
         //login
         $this->validate($request, [
             'email' => 'required|email',
@@ -60,9 +59,5 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUserId()
-    {
-        return $this->UserID;
-    }
 
 }

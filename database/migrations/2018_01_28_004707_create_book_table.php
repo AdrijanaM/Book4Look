@@ -21,6 +21,7 @@ class CreateBookTable extends Migration
             $table->string('bookAuthor',50);
             $table->decimal('average_rating');
             $table->text('description');
+            $table->integer('userId');
         });
     }
 

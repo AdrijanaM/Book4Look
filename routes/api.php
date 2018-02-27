@@ -13,45 +13,26 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-//login user
+//register user
 Route::post('/user',[
     'uses' => 'UserController@signup'
 ]);
-
+//login user
 Route::post('/user/signin',[
     'uses' => 'UserController@signin'
 ]);
 
-Route::get('/username',[
-    'uses' => 'UserController@getUserName'
-]);
-
 //quotes
-//Route::group(['middleware' => 'auth:api'], function () {
-//    Route::get('/posts', 'PostsController@index');
-//});
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('/quotes/{userId}', 'QuoteController@getQuotes');
+    Route::post('/quote', 'QuoteController@postQuote');
+    Route::put('/quote/{id}', 'QuoteController@putQuote');
+    Route::delete('/quote/{id}', 'QuoteController@deleteQuote');
+});
 
-Route::post('/quote',[
-    'uses' => 'QuoteController@postQuote',
-    'middleware' => 'auth.jwt'
-]);
-
-Route::get('/quotes/{userId}',[
-    'uses' => 'QuoteController@getQuotes',
-    'middleware' => 'auth.jwt'
-]);
-
-Route::put('/quote/{id}',[
-    'uses' => 'QuoteController@putQuote',
-    'middleware' => 'auth.jwt'
-]);
-
-Route::delete('/quote/{id}',[
-    'uses' => 'QuoteController@deleteQuote',
+//challenge
+Route::post('/challenge/{userId}',[
+    'uses' => 'ChallengeController@postChallenge',
     'middleware' => 'auth.jwt'
 ]);
 
@@ -59,20 +40,27 @@ Route::delete('/quote/{id}',[
 Route::post('/author',[
     'uses' => 'AuthorController@postAuthor'
 ]);
-
 Route::get('/authors',[
     'uses' => 'AuthorController@getAuthors'
 ]);
+//Route::put('/author/{id}',[
+//    'uses' => 'AuthorController@putAuthor'
+//]);
 
 //books
 Route::post('/book',[
-    'uses' => 'BookController@postBook'
+    'uses' => 'BookController@postBook',
+    'middleware' => 'auth.jwt'
+]);
+Route::get('/books/{userId}',[
+    'uses' => 'BookController@getBooks',
+    'middleware' => 'auth.jwt'
 ]);
 
-Route::get('/books',[
-    'uses' => 'BookController@getBooks'
+Route::get('/book/{userId}',[
+    'uses' => 'BookController@getSearchedBook',
+    'middleware' => 'auth.jwt'
 ]);
-
-//Route::put('/author/{id}',[
-//    'uses' => 'AuthorController@putAuthor'
+//Route::get('/book',[
+//    'uses' => 'BookController@getSearchedBook'
 //]);

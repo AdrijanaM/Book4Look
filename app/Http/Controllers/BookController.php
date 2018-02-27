@@ -20,32 +20,58 @@ class BookController extends Controller
         return $simpleXml;
     }
 
-    public function postBook(Request $request)
-    {
+//    public function postBook(Request $request)
+//    {
+//        $user = JWTAuth::parseToken()->toUser();
+//        $book = new Book();
+//        $books = Book::all();
+//        if (!$books->contains('title', $request->input('title'))) {
+//            $book->title = $request->input('title');
+//            echo $request->input('title');
+//            $book->userId = $user->id;
+//            $book->save();
+//            return response()->json(['book' => $book, 'user' => $user], 201);
+//
+//        }
+////            return $this->getSearchedBook($request->input('title'));
+//        return response()->json(['book' => $request->input('title'), 'user' => $user], 201); //ok
+//    }
+
+    public function postBook(Request $request){
         $user = JWTAuth::parseToken()->toUser();
         $book = new Book();
         $books = Book::all();
-        if (!$books->contains('title', $request->input('title'))) {
+        if (!$books->contains('title', $request->input('title'))){
             $book->title = $request->input('title');
-            echo $request->input('title');
+            $book->userId = $user->id;
             $book->save();
-            return response()->json(['book' => $book, 'user' => $user], 201);
-
+            $this->bookId($book);
         }
         return response()->json(['book' => $request->input('title'), 'user' => $user], 201); //ok
     }
 
-    public function getBooks()
+    public function getBooks($userId)
     {
-        $books = Book::all();
-        foreach ($books as $book) {
-            $this->bookId($book);
-        }
-
+        $books = Book::where('userId', $userId)->get();
         $response = [
             'books' => $books
         ];
+        return response()->json($response, 200);
+    }
 
+    public function getSearchedBook($userId, $title)
+    {
+        $books = Book::where('userId', $userId)->get();
+        $book = new Book();
+        if (!$books->contains('title', $title)){
+            $book->title = $title;
+            $book->userId = $userId;
+            $book->save();
+            $this->bookId($book);
+        }
+        $response = [
+            'book' => $book
+        ];
         return response()->json($response, 200);
     }
 
