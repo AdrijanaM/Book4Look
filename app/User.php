@@ -28,9 +28,9 @@ class User extends Authenticatable
     ];
 
 
-
     public function quotes(){
         return $this->belongsToMany('App\Quote')->withTimestamps();
     }
+
 
 }

@@ -9,7 +9,8 @@ class Book extends Model
     protected $table = 'books';
     public $timestamps = false;
 
-    public function authors(){
-        return $this->belongsToMany('App\Author', 'authors_books');
+    public function users(){
+        return $this->belongsToMany('App\User', 'users_books');
     }
+
 }

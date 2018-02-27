@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Author;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Input;
-use PHPUnit\Util\Xml;
 
 class AuthorController extends Controller
 {
@@ -26,14 +23,15 @@ class AuthorController extends Controller
 
     public function postAuthor(Request $request)
     {
+        $user = JWTAuth::parseToken()->toUser();
         $author = new Author();
         $authors = Author::all();
         if (!$authors->contains('fullName', $request->input('name'))) {
             $author->fullName = $request->input('name');
             $author->save();
-            return response()->json(['author' => $author], 201); //ok
+            return response()->json(['author' => $author, 'user' => $user], 201); //ok
         }
-        return response()->json(['author' => $request->input('name')], 201); //ok
+        return response()->json(['author' => $request->input('name'), 'user' => $user], 201); //ok
     }
 
     public function getAuthors()
@@ -50,17 +48,6 @@ class AuthorController extends Controller
 
         return response()->json($response, 200);
     }
-
-//    public function putAuthor(Request $request, $idAuthor)
-//    {
-//        $author = Author::all()->find($idAuthor);
-//        if (!$author) {
-//            return response()->json(['message' => 'Author not found']);
-//        }
-//        $author->fullName = $request->input('fullName');
-//        $author->save();
-//        return response()->json(['author' => $author], 200);
-//    }
 
     public function authorId($author)
     {
@@ -82,7 +69,6 @@ class AuthorController extends Controller
 //        echo $json->author->about;
         $author = Author::where('idAuthor', $id)->first();
 //        echo "\n";
-//        echo "LAST FUNCTION " . $author;
         if (!empty($author)) {
             $author->gender = $json->author->gender;
             $author->worksCount = $json->author->works_count;

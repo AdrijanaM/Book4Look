@@ -3,23 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Quote;
+use  App\User;
 
 class QuoteController extends Controller
 {
 
     public function postQuote(Request $request)
     {
+//        if(! $user = JWTAuth::parseToken()->authenticate()){
+//            // we dont have a user
+//            return response()->json([
+//                'message' => 'User not fount'
+//            ],404);
+//        }
+        $user = JWTAuth::parseToken()->toUser();
         $quote = new Quote();
         $quote->content = $request->input('content');
+        $quote->userId = $user->id;
         $quote->save();
-        return response()->json(['quote' => $quote], 201); //ok
+        return response()->json(['quote' => $quote, 'user' => $user], 201); //ok
 
     }
 
-    public function getQuotes()
+    public function getQuotes($userId)
     {
-        $quotes = Quote::all();
+        $quotes = Quote::where('userId', $userId)->get();
         $response = [
             'quotes' => $quotes
         ];

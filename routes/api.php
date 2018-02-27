@@ -13,67 +13,54 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-
+//register user
 Route::post('/user',[
     'uses' => 'UserController@signup'
 ]);
+//login user
+Route::post('/user/signin',[
+    'uses' => 'UserController@signin'
+]);
 
 //quotes
-Route::post('/quote',[
-    'uses' => 'QuoteController@postQuote'
-]);
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('/quotes/{userId}', 'QuoteController@getQuotes');
+    Route::post('/quote', 'QuoteController@postQuote');
+    Route::put('/quote/{id}', 'QuoteController@putQuote');
+    Route::delete('/quote/{id}', 'QuoteController@deleteQuote');
+});
 
-Route::get('/quotes',[
-    'uses' => 'QuoteController@getQuotes'
-]);
-
-Route::put('/quote/{id}',[
-    'uses' => 'QuoteController@putQuote'
-]);
-
-Route::delete('/quote/{id}',[
-    'uses' => 'QuoteController@deleteQuote'
+//challenge
+Route::post('/challenge/{userId}',[
+    'uses' => 'ChallengeController@postChallenge',
+    'middleware' => 'auth.jwt'
 ]);
 
 //authors
 Route::post('/author',[
     'uses' => 'AuthorController@postAuthor'
 ]);
-
 Route::get('/authors',[
     'uses' => 'AuthorController@getAuthors'
 ]);
-
-//books
-Route::post('/book',[
-    'uses' => 'BookController@postBook'
-]);
-
-Route::get('/books',[
-    'uses' => 'BookController@getBooks'
-]);
-
 //Route::put('/author/{id}',[
 //    'uses' => 'AuthorController@putAuthor'
 //]);
 
+//books
+Route::post('/book',[
+    'uses' => 'BookController@postBook',
+    'middleware' => 'auth.jwt'
+]);
+Route::get('/books/{userId}',[
+    'uses' => 'BookController@getBooks',
+    'middleware' => 'auth.jwt'
+]);
 
-//Route::group(['middleware' => 'auth:api'], function () {
-//    Route::get('/posts', 'PostsController@index');
-//});
-
-//Route::filter(
-//    'auth.basicCustom', function (Request $request) {
-//    $credentials = [ 'email' => $request->getUser(), 'password' => $request->getPassword() ];
-//
-//    if (!Auth::check()) {
-//        if (!Auth::once($credentials)) {
-//            throw new \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException('x-Basic');
-//        }
-//    }
-//}
-//);
+Route::get('/book/{userId}',[
+    'uses' => 'BookController@getSearchedBook',
+    'middleware' => 'auth.jwt'
+]);
+//Route::get('/book',[
+//    'uses' => 'BookController@getSearchedBook'
+//]);

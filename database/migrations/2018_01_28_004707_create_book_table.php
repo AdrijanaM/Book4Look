@@ -14,12 +14,14 @@ class CreateBookTable extends Migration
     public function up()
     {
         Schema::create('books', function (Blueprint $table) {
-            $table->integer('idbook', 10);
+            $table->integer('id', 11);
+            $table->integer('idbook');
             $table->string('title',50);
+            $table->string('image');
             $table->string('bookAuthor',50);
-//            $table->integer('publication_year');
-            $table->integer('average_rating',11);
+            $table->decimal('average_rating');
             $table->text('description');
+            $table->integer('userId');
         });
     }
 
