@@ -9,6 +9,7 @@ use App\Book;
 class BookController extends Controller
 {
     protected $myKey = 'ZntQSMfAAObel84F0rbsA';
+//    protected $idOfCurentUser;
 
     public function XXMLtoJSON($url)
     {
@@ -20,28 +21,12 @@ class BookController extends Controller
         return $simpleXml;
     }
 
-//    public function postBook(Request $request)
-//    {
-//        $user = JWTAuth::parseToken()->toUser();
-//        $book = new Book();
-//        $books = Book::all();
-//        if (!$books->contains('title', $request->input('title'))) {
-//            $book->title = $request->input('title');
-//            echo $request->input('title');
-//            $book->userId = $user->id;
-//            $book->save();
-//            return response()->json(['book' => $book, 'user' => $user], 201);
-//
-//        }
-////            return $this->getSearchedBook($request->input('title'));
-//        return response()->json(['book' => $request->input('title'), 'user' => $user], 201); //ok
-//    }
-
-    public function postBook(Request $request){
+    public function postBook(Request $request)
+    {
         $user = JWTAuth::parseToken()->toUser();
         $book = new Book();
         $books = Book::all();
-        if (!$books->contains('title', $request->input('title'))){
+        if (!$books->contains('title', $request->input('title'))) {
             $book->title = $request->input('title');
             $book->userId = $user->id;
             $book->save();
@@ -53,22 +38,30 @@ class BookController extends Controller
     public function getBooks($userId)
     {
         $books = Book::where('userId', $userId)->get();
+
+        foreach ($books as $book) {
+                $book::where('description', '')->delete();
+        }
+
         $response = [
             'books' => $books
         ];
         return response()->json($response, 200);
     }
 
-    public function getSearchedBook($userId, $title)
+    public function getSearchedBook($title)
     {
-        $books = Book::where('userId', $userId)->get();
-        $book = new Book();
-        if (!$books->contains('title', $title)){
+        $user = JWTAuth::parseToken()->toUser();
+        $book = Book::where('title', $title)->first();
+        if (empty($book)) {
+            $book = new Book();
             $book->title = $title;
-            $book->userId = $userId;
+            $book->userId = $user->id;
             $book->save();
             $this->bookId($book);
         }
+
+
         $response = [
             'book' => $book
         ];
@@ -108,7 +101,6 @@ class BookController extends Controller
             $book->image = $json->book->image_url;
             $newBook->save();
         }
-
 
     }
 

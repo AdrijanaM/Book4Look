@@ -26,21 +26,26 @@ class AuthorController extends Controller
         $user = JWTAuth::parseToken()->toUser();
         $author = new Author();
         $authors = Author::all();
-        if (!$authors->contains('fullName', $request->input('name'))) {
-            $author->fullName = $request->input('name');
+        if (!$authors->contains('fullName', $request->input('fullName'))) {
+            $author->fullName = $request->input('fullName');
+            $author->userId = $user->id;
             $author->save();
-            return response()->json(['author' => $author, 'user' => $user], 201); //ok
+            $this->authorId($author);
+//            return response()->json(['author' => $author, 'user' => $user], 201); //ok
         }
-        return response()->json(['author' => $request->input('name'), 'user' => $user], 201); //ok
+        return response()->json(['author' => $request->input('fullName'), 'user' => $user], 201); //ok
     }
 
-    public function getAuthors()
+    public function getAuthors($userId)
     {
-        $authors = Author::all();
+        $authors = Author::where('userId', $userId)->get();
         foreach ($authors as $author) {
-            $this->authorId($author);
-//            echo "\n";
+//            if ($book->description === '') {
+            $author::where('about', '')->delete();
+//            }
         }
+
+        $authors = Author::all();
 
         $response = [
             'authors' => $authors
@@ -49,6 +54,24 @@ class AuthorController extends Controller
         return response()->json($response, 200);
     }
 
+    public function getSearchedAuthor($fullName)
+    {
+        $user = JWTAuth::parseToken()->toUser();
+        $author = Author::where('fullName', $fullName)->first();
+        if (empty($author)) {
+            $author = new Author();
+            $author->fullName = $fullName;
+            $author->userId = $user->id;
+            $author->save();
+            $this->authorId($author);
+        }
+
+
+        $response = [
+            'author' => $author
+        ];
+        return response()->json($response, 200);
+    }
     public function authorId($author)
     {
         $authorName = $author->fullName;

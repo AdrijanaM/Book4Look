@@ -20,6 +20,7 @@ class CreateAuthorTable extends Migration
             $table->string('gender',45);
             $table->string('worksCount');
             $table->text('about');
+            $table->integer('userId');
         });
     }
 

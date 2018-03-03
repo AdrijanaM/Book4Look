@@ -9,6 +9,8 @@ use App\User;
 
 class UserController extends Controller
 {
+    protected $UserName;
+
     public function signup(Request $request)
     {
         //register
@@ -40,7 +42,7 @@ class UserController extends Controller
         ]);
         $emailOfUser = $request->input('email');
         $user = User::where('email', 'LIKE', $emailOfUser)->first();
-        $this->UserID = User::where('id', 'LIKE', $user->id)->first();
+        $this->UserName = $user->name;
         $credentials = $request->only('email', 'password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
@@ -59,5 +61,13 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function currentUser()
+    {
+        $user = JWTAuth::parseToken()->toUser();
+        $response = [
+            'user' => $user
+        ];
+        return response()->json($response, 200);
+    }
 
 }
