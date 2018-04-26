@@ -26,6 +26,12 @@ Route::get('getUser',[
     'uses' => 'UserController@currentUser',
     'middleware' => 'auth.jwt'
 ]);
+
+Route::get('userInfo/{id}',[
+    'uses' => 'UserController@userInfo',
+    'middleware' => 'auth.jwt'
+]);
+
 //quotes
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/quotes/{userId}', 'QuoteController@getQuotes');
@@ -51,6 +57,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 //books
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/books/{userId}', 'BookController@getBooks');
+    Route::get('/favBooks/{userId}', 'BookController@getFavBooks');
+    Route::put('/booksFav/{id}', 'BookController@updateBook');
     Route::get('/book/{title}', 'BookController@getSearchedBook');
     Route::post('/book', 'BookController@postBook');
 });

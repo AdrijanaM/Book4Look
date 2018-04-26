@@ -40,12 +40,8 @@ class AuthorController extends Controller
     {
         $authors = Author::where('userId', $userId)->get();
         foreach ($authors as $author) {
-//            if ($book->description === '') {
             $author::where('about', '')->delete();
-//            }
         }
-
-        $authors = Author::all();
 
         $response = [
             'authors' => $authors
@@ -96,6 +92,8 @@ class AuthorController extends Controller
             $author->gender = $json->author->gender;
             $author->worksCount = $json->author->works_count;
             $author->about = $json->author->about;
+            $author->image = $json->author->image_url;
+            $author->homeTown = $json->author->hometown;
             $author->save();
         } else {
             $newAuthor = new Author;
@@ -104,6 +102,8 @@ class AuthorController extends Controller
             $newAuthor->fullName = $json->author->name;
             $newAuthor->about = $json->author->about;
             $newAuthor->worksCount = $json->author->works_count;
+            $author->image = $json->author->image_url;
+            $author->homeTown = $json->author->hometown;
             $newAuthor->save();
         }
     }

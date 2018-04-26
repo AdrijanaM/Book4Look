@@ -9,6 +9,7 @@ use App\Book;
 class BookController extends Controller
 {
     protected $myKey = 'ZntQSMfAAObel84F0rbsA';
+
 //    protected $idOfCurentUser;
 
     public function XXMLtoJSON($url)
@@ -40,11 +41,24 @@ class BookController extends Controller
         $books = Book::where('userId', $userId)->get();
 
         foreach ($books as $book) {
-                $book::where('description', '')->delete();
+            $book::where('description', '')->delete();
         }
 
         $response = [
             'books' => $books
+        ];
+        return response()->json($response, 200);
+    }
+    public function getFavBooks($userId)
+    {
+        $books = Book::where('userId', $userId)->get();
+        $favBooks = [];
+        foreach ($books as $book) {
+           $favBooks =  $book::where('addToFav', 1)->get();
+        }
+
+        $response = [
+            'books' => $favBooks
         ];
         return response()->json($response, 200);
     }
@@ -60,12 +74,18 @@ class BookController extends Controller
             $book->save();
             $this->bookId($book);
         }
-
-
         $response = [
             'book' => $book
         ];
         return response()->json($response, 200);
+    }
+
+    public function updateBook( $id)
+    {
+        $book = Book::all()->find($id);
+        $book->addToFav = 1;
+        $book->save();
+        return response()->json(['book' => $book], 200);
     }
 
     public function bookId($book)
@@ -90,6 +110,7 @@ class BookController extends Controller
             $book->average_rating = $json->book->average_rating;
             $book->description = $json->book->description;
             $book->image = $json->book->image_url;
+            $book->addToFav = 0;
             $book->save();
         } else {
             $newBook = new Book;
@@ -99,6 +120,7 @@ class BookController extends Controller
             $newBook->average_rating = $json->book->average_rating;
             $newBook->description = $json->book->description;
             $book->image = $json->book->image_url;
+            $book->addToFav = 0;
             $newBook->save();
         }
 

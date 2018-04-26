@@ -22,6 +22,7 @@ class CreateBookTable extends Migration
             $table->decimal('average_rating');
             $table->text('description');
             $table->integer('userId');
+            $table->integer('addToFav');
         });
     }
 
