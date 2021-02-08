@@ -22,6 +22,16 @@ Route::post('/user/signin',[
     'uses' => 'UserController@signin'
 ]);
 
+Route::get('getUser',[
+    'uses' => 'UserController@currentUser',
+    'middleware' => 'auth.jwt'
+]);
+
+Route::get('userInfo/{id}',[
+    'uses' => 'UserController@userInfo',
+    'middleware' => 'auth.jwt'
+]);
+
 //quotes
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('/quotes/{userId}', 'QuoteController@getQuotes');
@@ -30,37 +40,25 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::delete('/quote/{id}', 'QuoteController@deleteQuote');
 });
 
-//challenge
-Route::post('/challenge/{userId}',[
-    'uses' => 'ChallengeController@postChallenge',
-    'middleware' => 'auth.jwt'
-]);
+//challenges
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('/challenges/{userId}', 'ChallengeController@getChallenges');
+    Route::post('/challenge', 'ChallengeController@postChallenge');
+    Route::delete('/challenge/{id}', 'ChallengeController@deleteChallenge');
+});
 
 //authors
-Route::post('/author',[
-    'uses' => 'AuthorController@postAuthor'
-]);
-Route::get('/authors',[
-    'uses' => 'AuthorController@getAuthors'
-]);
-//Route::put('/author/{id}',[
-//    'uses' => 'AuthorController@putAuthor'
-//]);
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('/authors/{userId}', 'AuthorController@getAuthors');
+    Route::get('/author/{fullName}', 'AuthorController@getSearchedAuthor');
+    Route::post('/author', 'AuthorController@postAuthor');
+});
 
 //books
-Route::post('/book',[
-    'uses' => 'BookController@postBook',
-    'middleware' => 'auth.jwt'
-]);
-Route::get('/books/{userId}',[
-    'uses' => 'BookController@getBooks',
-    'middleware' => 'auth.jwt'
-]);
-
-Route::get('/book/{userId}',[
-    'uses' => 'BookController@getSearchedBook',
-    'middleware' => 'auth.jwt'
-]);
-//Route::get('/book',[
-//    'uses' => 'BookController@getSearchedBook'
-//]);
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('/books/{userId}', 'BookController@getBooks');
+    Route::get('/favBooks/{userId}', 'BookController@getFavBooks');
+    Route::put('/booksFav/{id}', 'BookController@updateBook');
+    Route::get('/book/{title}', 'BookController@getSearchedBook');
+    Route::post('/book', 'BookController@postBook');
+});
